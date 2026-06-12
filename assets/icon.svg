@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#13141A"/>
+      <stop offset="100%" stop-color="#0A0B0F"/>
+    </radialGradient>
+    <filter id="glow-comfort">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="32" fill="url(#bg)"/>
+  <!-- Quadrant arcs -->
+  <!-- Comfort (top-left) - Indigo -->
+  <path d="M32,32 L32,8 A24,24 0 0,0 8,32 Z" fill="#6366F1" opacity="0.85"/>
+  <!-- Fear (top-right) - Red -->
+  <path d="M32,32 L56,32 A24,24 0 0,0 32,8 Z" fill="#EF4444" opacity="0.85"/>
+  <!-- Learning (bottom-left) - Amber -->
+  <path d="M32,32 L8,32 A24,24 0 0,0 32,56 Z" fill="#F59E0B" opacity="0.85"/>
+  <!-- Growth (bottom-right) - Emerald -->
+  <path d="M32,32 L32,56 A24,24 0 0,0 56,32 Z" fill="#10B981" opacity="0.85"/>
+  <!-- Center separator lines -->
+  <line x1="32" y1="8" x2="32" y2="56" stroke="#0A0B0F" stroke-width="2"/>
+  <line x1="8" y1="32" x2="56" y2="32" stroke="#0A0B0F" stroke-width="2"/>
+  <!-- Center dot -->
+  <circle cx="32" cy="32" r="4" fill="#F1F3F9"/>
+  <circle cx="32" cy="32" r="2" fill="#0A0B0F"/>
+  <!-- Outer ring -->
+  <circle cx="32" cy="32" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+</svg>

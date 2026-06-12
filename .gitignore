@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+dist/
+dist-electron/
+.pnpm-store/
+
+# Build outputs
+Equilibrium/
+*.lnk
+*.vbs
+*.bat
+
+# Database (local user data — stored in AppData, not here)
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.suo
+
+# Env
+.env
+.env.local
+.env.production
