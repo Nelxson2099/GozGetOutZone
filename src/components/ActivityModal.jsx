@@ -1,13 +1,6 @@
 import { useState } from 'react'
-import { X, ChevronRight, Save } from 'lucide-react'
+import { X, ChevronRight, Save, Swords, Shield, Minus } from 'lucide-react'
 import toast from 'react-hot-toast'
-
-const ZONE_FIELDS = {
-  1: [], // Confort — solo descripción y sentimiento
-  2: ['resistencia'],        // Miedo
-  3: ['habilidad'],          // Aprendizaje
-  4: ['meta_cumplida'],      // Crecimiento
-}
 
 const ZONE_DESCRIPTIONS = {
   1: 'Registra algo que hiciste desde tu zona segura.',
@@ -16,10 +9,48 @@ const ZONE_DESCRIPTIONS = {
   4: 'Una meta, logro o expansión que alcanzaste.',
 }
 
+const MISSION_TYPES = [
+  {
+    id: 'principal',
+    label: 'Misión Principal',
+    xp: 1000,
+    icon: '🏆',
+    description: 'Grande, épica y transformadora. Cambia quién eres.',
+    color: '#F59E0B',
+    glow: 'rgba(245,158,11,0.3)',
+    gradient: 'linear-gradient(135deg, #F59E0B22, #F97316111)',
+    border: '#F59E0B',
+  },
+  {
+    id: 'secundaria',
+    label: 'Misión Secundaria',
+    xp: 100,
+    icon: '⚡',
+    description: 'Táctica, diaria, constante. Los pequeños pasos importan.',
+    color: '#A78BFA',
+    glow: 'rgba(167,139,250,0.3)',
+    gradient: 'linear-gradient(135deg, #A78BFA22, #6366F111)',
+    border: '#A78BFA',
+  },
+  {
+    id: null,
+    label: 'Solo un registro',
+    xp: 0,
+    icon: '📝',
+    description: 'Registra sin gamificar. Solo para el historial.',
+    color: '#4A5166',
+    glow: 'rgba(74,81,102,0.2)',
+    gradient: 'linear-gradient(135deg, #4A516622, transparent)',
+    border: '#2E3450',
+  },
+]
+
 export default function ActivityModal({ zones, sentiments, onClose, onCreate }) {
-  const [step, setStep]         = useState(1) // 1=zona, 2=detalles
-  const [selectedZone, setSelectedZone] = useState(null)
-  const [form, setForm]         = useState({
+  const [step, setStep]             = useState(1)
+  const [selectedZone, setSelectedZone]   = useState(null)
+  const [selectedMission, setSelectedMission] = useState(undefined)
+  const [deadline, setDeadline]     = useState('')
+  const [form, setForm] = useState({
     descripcion:    '',
     sentimiento_id: null,
     resistencia:    5,
@@ -27,11 +58,16 @@ export default function ActivityModal({ zones, sentiments, onClose, onCreate }) 
     meta_cumplida:  '',
     notas:          '',
   })
-  const [saving, setSaving]     = useState(false)
+  const [saving, setSaving] = useState(false)
 
   function handleZoneSelect(zone) {
     setSelectedZone(zone)
     setStep(2)
+  }
+
+  function handleMissionSelect(type) {
+    setSelectedMission(type)
+    setStep(3)
   }
 
   function handleChange(field, value) {
@@ -47,15 +83,21 @@ export default function ActivityModal({ zones, sentiments, onClose, onCreate }) 
     setSaving(true)
     try {
       await onCreate({
-        zona_id:       selectedZone.id,
-        descripcion:   form.descripcion.trim(),
+        zona_id:        selectedZone.id,
+        descripcion:    form.descripcion.trim(),
         sentimiento_id: form.sentimiento_id || null,
-        resistencia:   selectedZone.id === 2 ? Number(form.resistencia) : null,
-        habilidad:     selectedZone.id === 3 ? form.habilidad.trim() || null : null,
-        meta_cumplida: selectedZone.id === 4 ? form.meta_cumplida.trim() || null : null,
-        notas:         form.notas.trim() || null,
+        resistencia:    selectedZone.id === 2 ? Number(form.resistencia) : null,
+        habilidad:      selectedZone.id === 3 ? form.habilidad.trim() || null : null,
+        meta_cumplida:  selectedZone.id === 4 ? form.meta_cumplida.trim() || null : null,
+        notas:          form.notas.trim() || null,
+        mision_tipo:    selectedMission?.id ?? null,
+        deadline:       (selectedMission?.id && deadline) ? deadline : null,
       })
-      toast.success(`¡Evento en Zona ${selectedZone.name} registrado! ${selectedZone.icon}`)
+      if (selectedMission?.id) {
+        toast.success(`¡${selectedMission.label} creada! ${selectedMission.icon} +${selectedMission.xp} XP al completar`)
+      } else {
+        toast.success(`¡Evento en Zona ${selectedZone.name} registrado! ${selectedZone.icon}`)
+      }
       onClose()
     } catch (err) {
       toast.error('Error al guardar. Intenta de nuevo.')
@@ -68,25 +110,45 @@ export default function ActivityModal({ zones, sentiments, onClose, onCreate }) 
   return (
     <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="glass rounded-3xl w-full max-w-lg mx-4 shadow-glass animate-slide-up overflow-hidden">
+
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-[#1E2235]">
           <div>
             <h2 className="text-base font-bold font-display text-[#F1F3F9]">
-              {step === 1 ? '¿En qué Zona estás?' : `Zona ${selectedZone?.icon} ${selectedZone?.name}`}
+              {step === 1 && '¿En qué Zona estás?'}
+              {step === 2 && `Zona ${selectedZone?.icon} ${selectedZone?.name}`}
+              {step === 3 && '¿Es una Misión?'}
             </h2>
             <p className="text-xs text-[#8892A4] mt-0.5">
-              {step === 1 ? 'Selecciona la zona que describe este momento' : ZONE_DESCRIPTIONS[selectedZone?.id]}
+              {step === 1 && 'Selecciona la zona que describe este momento'}
+              {step === 2 && ZONE_DESCRIPTIONS[selectedZone?.id]}
+              {step === 3 && 'Clasifica el tipo de impacto de esta actividad'}
             </p>
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-xl flex items-center justify-center text-[#4A5166] hover:text-[#F1F3F9] hover:bg-[#1A1D29] transition-all"
-          >
-            <X size={16} />
-          </button>
+          {/* Step dots */}
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1.5">
+              {[1, 2, 3].map(s => (
+                <div
+                  key={s}
+                  className="h-1.5 rounded-full transition-all duration-300"
+                  style={{
+                    width: step === s ? '20px' : '6px',
+                    backgroundColor: step >= s ? '#10B981' : '#1E2235',
+                  }}
+                />
+              ))}
+            </div>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-[#4A5166] hover:text-[#F1F3F9] hover:bg-[#1A1D29] transition-all"
+            >
+              <X size={16} />
+            </button>
+          </div>
         </div>
 
-        {/* Step 1 — Zone Selection */}
+        {/* ── STEP 1: Zone Selection ─────────────────────────────────────────── */}
         {step === 1 && (
           <div className="p-6 grid grid-cols-2 gap-3">
             {zones.map(zone => (
@@ -114,9 +176,9 @@ export default function ActivityModal({ zones, sentiments, onClose, onCreate }) 
           </div>
         )}
 
-        {/* Step 2 — Details Form */}
+        {/* ── STEP 2: Details Form ───────────────────────────────────────────── */}
         {step === 2 && selectedZone && (
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <form onSubmit={e => { e.preventDefault(); setStep(3) }} className="p-6 space-y-4">
             {/* Back */}
             <button
               type="button"
@@ -147,8 +209,7 @@ export default function ActivityModal({ zones, sentiments, onClose, onCreate }) 
                   Nivel de Resistencia: <span className="text-[#F1F3F9] font-bold">{form.resistencia}/10</span>
                 </label>
                 <input
-                  type="range"
-                  min="1" max="10"
+                  type="range" min="1" max="10"
                   value={form.resistencia}
                   onChange={e => handleChange('resistencia', e.target.value)}
                 />
@@ -163,8 +224,7 @@ export default function ActivityModal({ zones, sentiments, onClose, onCreate }) 
               <div>
                 <label className="block text-xs font-semibold text-[#F59E0B] mb-1.5">Habilidad Adquirida</label>
                 <input
-                  type="text"
-                  className="eq-input"
+                  type="text" className="eq-input"
                   placeholder="ej. React Hooks, comunicación asertiva..."
                   value={form.habilidad}
                   onChange={e => handleChange('habilidad', e.target.value)}
@@ -177,8 +237,7 @@ export default function ActivityModal({ zones, sentiments, onClose, onCreate }) 
               <div>
                 <label className="block text-xs font-semibold text-[#10B981] mb-1.5">Meta Cumplida</label>
                 <input
-                  type="text"
-                  className="eq-input"
+                  type="text" className="eq-input"
                   placeholder="ej. Lancé mi primera app, completé el reto de 30 días..."
                   value={form.meta_cumplida}
                   onChange={e => handleChange('meta_cumplida', e.target.value)}
@@ -212,18 +271,17 @@ export default function ActivityModal({ zones, sentiments, onClose, onCreate }) 
             <div>
               <label className="block text-xs font-semibold text-[#8892A4] mb-1.5">Notas adicionales (opcional)</label>
               <input
-                type="text"
-                className="eq-input"
+                type="text" className="eq-input"
                 placeholder="Reflexión, contexto, próximo paso..."
                 value={form.notas}
                 onChange={e => handleChange('notas', e.target.value)}
               />
             </div>
 
-            {/* Submit */}
+            {/* Next */}
             <button
               type="submit"
-              disabled={saving || !form.descripcion.trim()}
+              disabled={!form.descripcion.trim()}
               className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: `linear-gradient(135deg, ${selectedZone.color}, ${selectedZone.color}cc)`,
@@ -231,16 +289,120 @@ export default function ActivityModal({ zones, sentiments, onClose, onCreate }) 
                 color: 'white',
               }}
             >
+              Siguiente → Clasificar Misión
+            </button>
+          </form>
+        )}
+
+        {/* ── STEP 3: Mission Type ───────────────────────────────────────────── */}
+        {step === 3 && (
+          <div className="p-6 space-y-3">
+            <button
+              type="button"
+              onClick={() => setStep(2)}
+              className="text-[10px] text-[#8892A4] hover:text-[#F1F3F9] flex items-center gap-1 transition-colors mb-1"
+            >
+              ← Volver a detalles
+            </button>
+
+            {MISSION_TYPES.map(type => (
+              <button
+                key={String(type.id)}
+                onClick={() => setSelectedMission(type)}
+                className={`w-full p-4 rounded-2xl border text-left transition-all duration-200 relative overflow-hidden group ${
+                  selectedMission?.id === type.id
+                    ? 'scale-[1.01]'
+                    : 'hover:scale-[1.005]'
+                }`}
+                style={{
+                  background: selectedMission?.id === type.id ? type.gradient : `${type.color}08`,
+                  borderColor: selectedMission?.id === type.id ? type.border : '#1E2235',
+                  boxShadow: selectedMission?.id === type.id ? `0 0 20px ${type.glow}` : 'none',
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0"
+                    style={{
+                      background: `${type.color}15`,
+                      border: `1px solid ${type.color}30`,
+                    }}
+                  >
+                    {type.icon}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-[#F1F3F9]">{type.label}</p>
+                      {type.xp > 0 && (
+                        <span
+                          className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                          style={{ background: `${type.color}20`, color: type.color }}
+                        >
+                          +{type.xp} XP
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-[#8892A4] mt-0.5">{type.description}</p>
+                  </div>
+                  {selectedMission?.id === type.id && (
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                      style={{ background: type.color }}
+                    >
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              </button>
+            ))}
+
+            {/* Deadline — only show when a mission type is selected */}
+            {selectedMission?.id && (
+              <div className="pt-1">
+                <label className="block text-xs font-semibold text-[#8892A4] mb-1.5">
+                  📅 Fecha límite <span className="font-normal text-[#4A5166]">(opcional)</span>
+                </label>
+                <input
+                  type="date"
+                  className="eq-input text-sm"
+                  min={new Date().toISOString().split('T')[0]}
+                  value={deadline}
+                  onChange={e => setDeadline(e.target.value)}
+                />
+                {deadline && (
+                  <p className="text-[10px] text-[#F59E0B] mt-1">
+                    ⚠️ Si no completas antes de esa fecha, la misión se marcará como vencida.
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Submit */}
+            <button
+              type="button"
+              disabled={saving || selectedMission === undefined}
+              onClick={handleSubmit}
+              className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              style={selectedMission ? {
+                background: selectedMission.id
+                  ? `linear-gradient(135deg, ${selectedMission.color}, ${selectedMission.color}99)`
+                  : 'linear-gradient(135deg, #1E2235, #161924)',
+                boxShadow: selectedMission.id ? `0 0 24px ${selectedMission.glow}` : 'none',
+                color: 'white',
+              } : { background: '#1E2235', color: '#4A5166' }}
+            >
               {saving ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
                   <Save size={14} />
-                  Registrar Expansión
+                  {selectedMission?.id ? `Crear ${selectedMission.label}` : 'Registrar Actividad'}
                 </>
               )}
             </button>
-          </form>
+          </div>
         )}
       </div>
     </div>

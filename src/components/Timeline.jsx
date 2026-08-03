@@ -129,6 +129,24 @@ function TimelineItem({ activity: act, isExpanded, onToggle, onDelete }) {
                   {act.sentimiento_emoji} {act.sentimiento_label}
                 </span>
               )}
+              {act.mision_tipo === 'principal' && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      style={{ background: '#F59E0B15', color: '#F59E0B', border: '1px solid #F59E0B30' }}>
+                  🏆 Principal
+                </span>
+              )}
+              {act.mision_tipo === 'secundaria' && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      style={{ background: '#A78BFA15', color: '#A78BFA', border: '1px solid #A78BFA30' }}>
+                  ⚡ Secundaria
+                </span>
+              )}
+              {act.completada ? (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      style={{ background: '#10B98115', color: '#10B981', border: '1px solid #10B98130' }}>
+                  ✅ Completada
+                </span>
+              ) : null}
               <span className="text-[10px] text-[#4A5166]">{timeAgo}</span>
             </div>
           </div>

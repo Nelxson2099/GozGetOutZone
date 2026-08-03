@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Equilibrium — Guía de 0 a 100</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0B0F;--surface:#12141C;--card:#161924;--border:#1E2235;
+  --text:#F1F3F9;--muted:#8892A4;--dim:#4A5166;
+  --comfort:#6366F1;--fear:#EF4444;--learning:#F59E0B;--growth:#10B981;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.7}
+.container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+h1{font-family:'Outfit',sans-serif;font-size:3rem;font-weight:800;
+   background:linear-gradient(135deg,var(--growth),var(--comfort));
+   -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:var(--muted);font-size:1.1rem;margin-bottom:3rem}
+h2{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:700;
+   color:var(--text);margin:2.5rem 0 1rem;display:flex;align-items:center;gap:.75rem}
+h2 .num{width:2rem;height:2rem;border-radius:.5rem;background:var(--growth);
+        color:#fff;font-size:.85rem;display:flex;align-items:center;justify-content:center;
+        font-weight:800;flex-shrink:0}
+h3{color:var(--growth);font-size:1rem;margin:1.25rem 0 .5rem}
+p{color:var(--muted);margin-bottom:.75rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:1rem;
+      padding:1.5rem;margin:1rem 0}
+.card:hover{border-color:rgba(16,185,129,.3)}
+code{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.06);
+     padding:.15rem .4rem;border-radius:.3rem;font-size:.82rem;color:var(--learning)}
+pre{background:#0D0E13;border:1px solid var(--border);border-radius:.75rem;
+    padding:1.25rem;margin:.75rem 0;overflow-x:auto}
+pre code{background:none;padding:0;color:#A8FF78;font-size:.82rem}
+.badge{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .75rem;
+       border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.05em;
+       text-transform:uppercase;margin:.25rem}
+.b-comfort{background:rgba(99,102,241,.15);color:var(--comfort);border:1px solid rgba(99,102,241,.3)}
+.b-fear{background:rgba(239,68,68,.15);color:var(--fear);border:1px solid rgba(239,68,68,.3)}
+.b-learn{background:rgba(245,158,11,.15);color:var(--learning);border:1px solid rgba(245,158,11,.3)}
+.b-growth{background:rgba(16,185,129,.15);color:var(--growth);border:1px solid rgba(16,185,129,.3)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0}
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem}
+.step-card .icon{font-size:1.5rem;margin-bottom:.5rem}
+.step-card h4{color:var(--text);font-size:.9rem;font-weight:600;margin-bottom:.4rem}
+.step-card p{font-size:.82rem}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th{text-align:left;padding:.75rem;background:var(--surface);color:var(--muted);
+   font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+td{padding:.75rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--muted);font-size:.85rem}
+td:first-child{color:var(--text);font-weight:500}
+.pro-tip{background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(99,102,241,.05));
+         border:1px solid rgba(16,185,129,.2);border-radius:.75rem;padding:1rem 1.25rem;margin:1rem 0}
+.pro-tip strong{color:var(--growth)}
+.header-bar{background:var(--surface);border-bottom:1px solid var(--border);
+            padding:1rem 2rem;position:sticky;top:0;z-index:100;
+            display:flex;align-items:center;justify-between;gap:1rem}
+.logo-dot{width:1rem;height:1rem;border-radius:50%;
+          background:conic-gradient(var(--comfort) 0 25%,var(--fear) 25% 50%,var(--learning) 50% 75%,var(--growth) 75%)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:1rem;
+     padding:1.5rem;margin:2rem 0}
+.toc a{display:block;color:var(--muted);text-decoration:none;padding:.25rem 0;
+       font-size:.88rem;transition:color .2s}
+.toc a:hover{color:var(--growth)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:2.5rem 0}
+@media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr}h1{font-size:2rem}}
+</style>
+</head>
+<body>
+
+<div class="header-bar">
+  <div style="display:flex;align-items:center;gap:.75rem">
+    <div class="logo-dot"></div>
+    <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:.95rem">EQUILIBRIUM</span>
+    <span style="color:var(--dim);font-size:.75rem">Guía de Construcción</span>
+  </div>
+  <div>
+    <span class="badge b-growth">v1.0.0</span>
+    <span class="badge b-comfort">Electron + React</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <h1>De 0 a 100: Cómo Construir Equilibrium</h1>
+  <p class="subtitle">La guía completa para crear una app de escritorio profesional con Electron, React, Vite y SQLite — desde cero hasta producción.</p>
+
+  <div class="toc">
+    <h3 style="color:var(--text);margin-bottom:.75rem">📋 Tabla de Contenidos</h3>
+    <a href="#s1">1. ¿Por qué Electron? El ecosistema del Desktop</a>
+    <a href="#s2">2. La Arquitectura: Qué debe tener una app profesional</a>
+    <a href="#s3">3. Stack Tecnológico elegido y por qué</a>
+    <a href="#s4">4. Estructura de carpetas (MNE Protocol)</a>
+    <a href="#s5">5. Proceso Main vs Renderer — La dualidad de Electron</a>
+    <a href="#s6">6. Base de datos local: SQLite con sql.js</a>
+    <a href="#s7">7. El sistema de IPC — La columna vertebral</a>
+    <a href="#s8">8. UI/UX de productividad: lo que hace diferente a una buena app</a>
+    <a href="#s9">9. Build y Packaging — Tu .exe profesional</a>
+    <a href="#s10">10. Checklist Pro: Lo que toda app de escritorio debe tener</a>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S1 -->
+  <h2 id="s1"><span class="num">1</span>¿Por qué Electron?</h2>
+  <p>Electron permite construir aplicaciones de escritorio usando tecnologías web (HTML, CSS, JS). Combina <strong style="color:var(--text)">Chromium</strong> (el motor de Chrome) con <strong style="color:var(--text)">Node.js</strong>, dando acceso al sistema de archivos, notificaciones nativas y hardware del PC.</p>
+  <div class="grid-2">
+    <div class="step-card">
+      <div class="icon">⚡</div>
+      <h4>Ventajas</h4>
+      <p>Un solo codebase para Windows, macOS y Linux. Reusar todo el conocimiento web. Ecosistema npm gigante disponible.</p>
+    </div>
+    <div class="step-card">
+      <div class="icon">⚖️</div>
+      <h4>Alternativas</h4>
+      <p><strong style="color:var(--text)">Tauri</strong> (Rust, más ligero). <strong style="color:var(--text)">NW.js</strong> (más viejo). <strong style="color:var(--text)">Flutter</strong> (Dart). Electron gana en madurez y ecosistema.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S2 -->
+  <h2 id="s2"><span class="num">2</span>Arquitectura de una App Profesional</h2>
+  <p>Una app de escritorio profesional no es solo "funciona". Debe cumplir:</p>
+  <div class="grid-3">
+    <div class="step-card"><div class="icon">🔒</div><h4>Seguridad</h4><p>contextIsolation, sin nodeIntegration en renderer, CSP.</p></div>
+    <div class="step-card"><div class="icon">💾</div><h4>Persistencia</h4><p>SQLite o JSON en userData. Nunca en directorio de la app (se borra al actualizar).</p></div>
+    <div class="step-card"><div class="icon">🎨</div><h4>Experiencia Nativa</h4><p>Titlebar custom, atajos de teclado, notificaciones del sistema.</p></div>
+    <div class="step-card"><div class="icon">📦</div><h4>Packaging</h4><p>Instalador .exe con icono, firma de código, uninstaller.</p></div>
+    <div class="step-card"><div class="icon">🔄</div><h4>Auto-Update</h4><p>electron-updater + GitHub Releases. El software evoluciona solo.</p></div>
+    <div class="step-card"><div class="icon">📁</div><h4>MNE Structure</h4><p>Componentes &lt;300 líneas. UI separada de lógica. Sin monolitos.</p></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S3 -->
+  <h2 id="s3"><span class="num">3</span>Stack Tecnológico</h2>
+  <table>
+    <thead><tr><th>Tecnología</th><th>Rol</th><th>Por qué</th></tr></thead>
+    <tbody>
+      <tr><td>Electron 33</td><td>Runtime desktop</td><td>Acceso a Node.js, ventana nativa, IPC</td></tr>
+      <tr><td>React 18</td><td>UI reactiva</td><td>Componentes reutilizables, estado eficiente</td></tr>
+      <tr><td>Vite 6</td><td>Build / Dev server</td><td>HMR ultrarrápido, builds optimizados</td></tr>
+      <tr><td>Tailwind CSS 3</td><td>Estilos</td><td>Design tokens, utilidades, modo oscuro</td></tr>
+      <tr><td>sql.js</td><td>Base de datos</td><td>SQLite WASM — sin compilación nativa</td></tr>
+      <tr><td>Chart.js</td><td>Visualización</td><td>Radar chart, sin dependencias pesadas</td></tr>
+      <tr><td>pnpm</td><td>Package manager</td><td>50% más rápido, sin phantom deps</td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+
+  <!-- S4 -->
+  <h2 id="s4"><span class="num">4</span>Estructura de Carpetas</h2>
+  <pre><code>GetOutZone - GOZ/
+├── electron/
+│   ├── main.js        ← Proceso principal (Node.js puro)
+│   └── preload.js     ← Bridge seguro contextBridge
+├── src/
+│   ├── components/    ← UI pura (&lt;300 líneas c/u)
+│   │   ├── TitleBar.jsx
+│   │   ├── Sidebar.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── Timeline.jsx
+│   │   ├── InsightsPanel.jsx
+│   │   ├── ActivityModal.jsx
+│   │   ├── InsightBanner.jsx
+│   │   └── FAB.jsx
+│   ├── App.jsx        ← Root: estado global, routing
+│   ├── main.jsx       ← ReactDOM.render
+│   └── index.css      ← Design system tokens
+├── assets/
+│   ├── icon.png       ← Ícono de la app
+│   └── icon.svg       ← Versión vectorial
+├── index.html
+├── vite.config.js
+├── tailwind.config.js
+├── package.json       ← pnpm + electron-builder
+├── Equilibrium.vbs    ← Launcher silencioso
+├── README.md
+├── SOUL.md
+└── PROJECT.md</code></pre>
+
+  <div class="pro-tip">
+    <strong>Regla MNE:</strong> Si un componente supera las 300 líneas, divídelo en sub-componentes. La modularidad previene el "archivo dios" que nadie puede mantener.
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S5 -->
+  <h2 id="s5"><span class="num">5</span>Main Process vs Renderer Process</h2>
+  <p>Esta es la dualidad fundamental de Electron. Confundirla es el error #1 de los principiantes.</p>
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <h3>🔵 Main Process (electron/main.js)</h3>
+        <p>Corre en Node.js. Tiene acceso al sistema de archivos, la base de datos, el sistema operativo. <strong style="color:var(--text)">Es el backend.</strong></p>
+        <pre><code>// Solo en main.js
+const fs = require('fs')
+const db = new SQL.Database()</code></pre>
+      </div>
+      <div>
+        <h3>🟢 Renderer Process (React)</h3>
+        <p>Corre en Chromium (como un browser). NO tiene acceso directo a Node.js. <strong style="color:var(--text)">Es el frontend.</strong></p>
+        <pre><code>// En React — via preload bridge
+const result = await window.equilibrium
+  .activities.getAll()</code></pre>
+      </div>
+    </div>
+    <div class="pro-tip" style="margin-top:1rem">
+      <strong>La regla de oro:</strong> El Renderer NUNCA toca la DB ni el FS directamente. Todo pasa por IPC → preload → main.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S6 -->
+  <h2 id="s6"><span class="num">6</span>Base de Datos Local con sql.js</h2>
+  <p><strong style="color:var(--text)">sql.js</strong> es SQLite compilado a WebAssembly. No requiere compiladores de C++ (a diferencia de better-sqlite3), lo que lo hace perfecto para desarrollo inmediato en Windows.</p>
+  <pre><code>const initSqlJs = require('sql.js')
+const SQL = await initSqlJs()
+
+// Cargar DB existente del disco
+const buffer = fs.readFileSync(dbPath)
+const db = new SQL.Database(buffer)
+
+// Crear nueva
+const db = new SQL.Database()
+
+// Guardar al disco después de cada escritura
+function persist() {
+  const data = db.export()
+  fs.writeFileSync(dbPath, Buffer.from(data))
+}
+
+// Ejecutar consultas
+db.run('INSERT INTO activities (...) VALUES (?)', [value])
+const res = db.exec('SELECT * FROM activities')
+
+// Convertir resultado a array de objetos
+const { columns, values } = res[0]
+const rows = values.map(row => {
+  const obj = {}
+  columns.forEach((col, i) => obj[col] = row[i])
+  return obj
+})</code></pre>
+
+  <div class="card">
+    <h3>📍 ¿Dónde guardar la DB?</h3>
+    <p>Siempre en <code>app.getPath('userData')</code> — nunca en el directorio de instalación. En Windows: <code>C:\Users\[usuario]\AppData\Roaming\equilibrium\</code></p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S7 -->
+  <h2 id="s7"><span class="num">7</span>El Sistema IPC — La Columna Vertebral</h2>
+  <p>IPC (Inter-Process Communication) es cómo el frontend (React) habla con el backend (Electron).</p>
+  <div class="grid-2">
+    <div>
+      <h3>1. Define el canal en main.js</h3>
+      <pre><code>ipcMain.handle('activities:getAll', () => {
+  return rowsToObjects(db.exec('SELECT ...'))
+})</code></pre>
+    </div>
+    <div>
+      <h3>2. Expón via preload.js</h3>
+      <pre><code>contextBridge.exposeInMainWorld(
+  'equilibrium', {
+    activities: {
+      getAll: () => ipcRenderer
+        .invoke('activities:getAll')
+    }
+  }
+)</code></pre>
+    </div>
+  </div>
+  <h3>3. Llama desde React</h3>
+  <pre><code>const data = await window.equilibrium.activities.getAll()
+setActivities(data)</code></pre>
+
+  <div class="divider"></div>
+
+  <!-- S8 -->
+  <h2 id="s8"><span class="num">8</span>UI/UX de Productividad</h2>
+  <div class="grid-3">
+    <div class="step-card"><div class="icon">🪟</div><h4>Ventana Frameless</h4><p>Elimina la barra del sistema. Crea titlebar propio con <code>-webkit-app-region:drag</code>.</p></div>
+    <div class="step-card"><div class="icon">🌑</div><h4>Dark Mode Forzado</h4><p><code>nativeTheme.themeSource='dark'</code> desde el main process. Nunca depender del sistema.</p></div>
+    <div class="step-card"><div class="icon">✨</div><h4>Glassmorphism</h4><p><code>backdrop-filter:blur(20px)</code> con fondos semi-transparentes. Efecto premium inmediato.</p></div>
+    <div class="step-card"><div class="icon">📊</div><h4>Visualización</h4><p>Un Radar Chart muestra balance de forma intuitiva. Los números solos no comunican.</p></div>
+    <div class="step-card"><div class="icon">⚡</div><h4>FAB</h4><p>Floating Action Button siempre visible. Reduce fricción del flujo principal a 1 clic.</p></div>
+    <div class="step-card"><div class="icon">🧠</div><h4>Insights Automáticos</h4><p>La app piensa por el usuario. Si lleva X días sin actividad, le avisa. Retención = valor.</p></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S9 -->
+  <h2 id="s9"><span class="num">9</span>Build y Packaging</h2>
+  <pre><code># Build del frontend (Vite)
+pnpm build
+
+# Packaging con electron-builder
+pnpm electron:build
+
+# Output: dist-electron/
+# ├── Equilibrium Setup 1.0.0.exe  ← Instalador NSIS
+# └── win-unpacked/                ← Portable</code></pre>
+  <div class="card">
+    <h3>electron-builder config (en package.json)</h3>
+    <pre><code>"build": {
+  "appId": "com.nelxson2099.equilibrium",
+  "productName": "Equilibrium",
+  "win": { "target": "nsis", "icon": "assets/icon.ico" },
+  "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+}</code></pre>
+  </div>
+  <div class="pro-tip">
+    <strong>Para producción:</strong> Convierte icon.png a icon.ico (256x256) con <a href="https://convertio.co" style="color:var(--growth)">convertio.co</a> y úsalo en la configuración de electron-builder.
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S10 -->
+  <h2 id="s10"><span class="num">10</span>Checklist Pro — Lo que toda app debe tener</h2>
+  <table>
+    <thead><tr><th>Item</th><th>Estado Equilibrium</th><th>Prioridad</th></tr></thead>
+    <tbody>
+      <tr><td>Ventana custom (frameless)</td><td>✅ Implementado</td><td><span class="badge b-fear">Alta</span></td></tr>
+      <tr><td>Base de datos local</td><td>✅ sql.js</td><td><span class="badge b-fear">Alta</span></td></tr>
+      <tr><td>Seguridad IPC (contextBridge)</td><td>✅ Implementado</td><td><span class="badge b-fear">Alta</span></td></tr>
+      <tr><td>Dark mode forzado</td><td>✅ nativeTheme</td><td><span class="badge b-comfort">Media</span></td></tr>
+      <tr><td>Visualización de datos</td><td>✅ Radar Chart</td><td><span class="badge b-comfort">Media</span></td></tr>
+      <tr><td>Launcher .vbs silencioso</td><td>✅ Equilibrium.vbs</td><td><span class="badge b-comfort">Media</span></td></tr>
+      <tr><td>README + SOUL + PROJECT</td><td>✅ Documentado</td><td><span class="badge b-learn">Buena práctica</span></td></tr>
+      <tr><td>Auto-updater (GitHub Releases)</td><td>🔄 v1.2</td><td><span class="badge b-growth">Roadmap</span></td></tr>
+      <tr><td>Notificaciones del sistema</td><td>🔄 v1.2</td><td><span class="badge b-growth">Roadmap</span></td></tr>
+      <tr><td>Code Signing (.exe firmado)</td><td>🔄 v2.0</td><td><span class="badge b-growth">Roadmap</span></td></tr>
+      <tr><td>Tray icon</td><td>🔄 v1.2</td><td><span class="badge b-growth">Roadmap</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+
+  <div class="card" style="text-align:center;padding:2.5rem">
+    <div style="font-size:3rem;margin-bottom:1rem">🚀</div>
+    <h2 style="font-family:'Outfit',sans-serif;font-size:1.75rem;font-weight:800;margin:0 0 .75rem;background:linear-gradient(135deg,var(--growth),var(--comfort));-webkit-background-clip:text;-webkit-text-fill-color:transparent">
+      Equilibrium está listo
+    </h2>
+    <p style="max-width:500px;margin:0 auto 1.5rem">Tienes la arquitectura, el código, la DB, los insights y la documentación. El único paso que falta es el que tú das cada día.</p>
+    <div>
+      <span class="badge b-comfort">🏠 Confort</span>
+      <span class="badge b-fear">⚡ Miedo</span>
+      <span class="badge b-learn">📚 Aprendizaje</span>
+      <span class="badge b-growth">🚀 Crecimiento</span>
+    </div>
+    <p style="margin-top:1.5rem;font-size:.8rem;color:var(--dim)">
+      Built by Nelxson2099 × Antigravity AI · 2026
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
